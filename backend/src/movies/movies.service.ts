@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
 import { OmdbService } from '@/omdb/omdb.service';
+import { OmdbMovie, PaginatedResponse } from '@/types';
 
 @Injectable()
 export class MoviesService {
   constructor(private readonly omdbService: OmdbService) {}
 
-  async listMovies(search: string, page: number) {
+  async listMovies(search: string, page: number): Promise<PaginatedResponse<OmdbMovie>> {
     const omdbResponse = await this.omdbService.searchMovies(search, page);
 
     const response = {
       results: omdbResponse.Search,
-      totalResults: omdbResponse.totalResults,
+      totalResults: Number(omdbResponse.totalResults),
       page,
       totalPages: Math.ceil(Number(omdbResponse.totalResults) / 10),
     };
