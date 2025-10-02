@@ -11,7 +11,7 @@ export class FavoritesService {
   async create(createFavoriteDto: CreateFavoriteDto): Promise<FavoriteMovies> {
     const existingFavorite = await this.prisma.favoriteMovies.findUnique({
       where: {
-        omdbId: createFavoriteDto.omdbId,
+        imdbId: createFavoriteDto.imdbId,
       },
     });
 
