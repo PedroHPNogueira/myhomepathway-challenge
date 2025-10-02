@@ -5,3 +5,13 @@ export interface OmdbMovie {
   Type: string;
   Poster: string;
 }
+
+export interface FavoriteMovie {
+  id: string;
+  imdbId: string;
+  title: string;
+  year: string;
+  poster: string;
+  createdAt: string;
+  updatedAt: string;
+}
