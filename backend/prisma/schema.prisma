@@ -13,7 +13,7 @@ datasource db {
 
 model FavoriteMovies {
   id        String   @id @default(uuid())
-  imdbID    String   @unique
+  omdbId    String   @unique
   title     String
   year      String
   poster    String
