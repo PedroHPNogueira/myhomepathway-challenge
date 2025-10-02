@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
+import { FavoritesModule } from '@/favorites/favorites.module';
 import { MoviesModule } from '@/movies/movies.module';
 
 @Module({
@@ -11,6 +12,7 @@ import { MoviesModule } from '@/movies/movies.module';
       isGlobal: true,
     }),
     MoviesModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
