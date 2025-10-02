@@ -40,7 +40,7 @@ describe('FavoritesService', () => {
 
   describe('create', () => {
     const createFavoriteDto: CreateFavoriteDto = {
-      omdbId: 'tt0096895',
+      imdbId: 'tt0096895',
       title: 'Batman',
       year: '1989',
       poster: 'https://example.com/poster.jpg',
@@ -49,7 +49,7 @@ describe('FavoritesService', () => {
     it('should create a new favorite movie', async () => {
       const expectedResult: FavoriteMovies = {
         id: '123',
-        omdbId: 'tt0096895',
+        imdbId: 'tt0096895',
         title: 'Batman',
         year: '1989',
         poster: 'https://example.com/poster.jpg',
@@ -64,7 +64,7 @@ describe('FavoritesService', () => {
 
       expect(result).toEqual(expectedResult);
       expect(prismaService.favoriteMovies.findUnique).toHaveBeenCalledWith({
-        where: { omdbId: 'tt0096895' },
+        where: { imdbId: 'tt0096895' },
       });
       expect(prismaService.favoriteMovies.create).toHaveBeenCalledWith({
         data: createFavoriteDto,
@@ -74,7 +74,7 @@ describe('FavoritesService', () => {
     it('should throw BadRequestException if movie already exists in favorites', async () => {
       const existingFavorite: FavoriteMovies = {
         id: '123',
-        omdbId: 'tt0096895',
+        imdbId: 'tt0096895',
         title: 'Batman',
         year: '1989',
         poster: 'https://example.com/poster.jpg',
@@ -88,7 +88,7 @@ describe('FavoritesService', () => {
       await expect(service.create(createFavoriteDto)).rejects.toThrow('Movie already in favorites');
 
       expect(prismaService.favoriteMovies.findUnique).toHaveBeenCalledWith({
-        where: { omdbId: 'tt0096895' },
+        where: { imdbId: 'tt0096895' },
       });
       expect(prismaService.favoriteMovies.create).not.toHaveBeenCalled();
     });
@@ -99,7 +99,7 @@ describe('FavoritesService', () => {
       const expectedResult: FavoriteMovies[] = [
         {
           id: '1',
-          omdbId: 'tt0096895',
+          imdbId: 'tt0096895',
           title: 'Batman',
           year: '1989',
           poster: 'https://example.com/poster1.jpg',
@@ -108,7 +108,7 @@ describe('FavoritesService', () => {
         },
         {
           id: '2',
-          omdbId: 'tt0103776',
+          imdbId: 'tt0103776',
           title: 'Batman Returns',
           year: '1992',
           poster: 'https://example.com/poster2.jpg',
