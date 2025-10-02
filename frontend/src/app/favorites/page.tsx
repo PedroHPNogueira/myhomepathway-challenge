@@ -13,62 +13,6 @@ export default function FavoritesPage() {
   const { data: favorites, isLoading, isError, error } = useListFavoriteMovies();
   const isMobile = useIsMobile();
 
-  const renderEmptyState = () => (
-    <div className="text-center py-16">
-      <div className="mb-6">
-        <Heart className="h-24 w-24 mx-auto text-muted-foreground/50 mb-4" />
-        <h2 className="text-2xl font-semibold mb-2">No favorite movies yet</h2>
-        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-          Start building your collection by adding movies to your favorites. Discover amazing films and keep track of
-          the ones you love!
-        </p>
-      </div>
-
-      <div className={`flex gap-3 justify-center ${isMobile ? 'flex-col' : 'flex-row'}`}>
-        <Button asChild size={isMobile ? 'default' : 'lg'} className="w-full sm:w-auto">
-          <Link href="/movies">
-            <Search className="h-4 w-4 mr-2" />
-            Browse Movies
-          </Link>
-        </Button>
-      </div>
-    </div>
-  );
-
-  const renderFavoritesList = () => {
-    if (!favorites || favorites.length === 0) {
-      return renderEmptyState();
-    }
-
-    return (
-      <>
-        <div className="mb-8">
-          <div className={`flex items-center mb-4 ${isMobile ? 'flex-col gap-4' : 'justify-between'}`}>
-            <div className={isMobile ? 'text-center' : ''}>
-              <h2 className="text-2xl font-semibold mb-2">Your Favorite Movies</h2>
-              <p className="text-muted-foreground">
-                You have {favorites.length} movie{favorites.length !== 1 ? 's' : ''} in your favorites
-              </p>
-            </div>
-
-            <Button variant="outline" asChild className={isMobile ? 'w-full' : ''}>
-              <Link href="/movies">
-                <Search className="h-4 w-4 mr-2" />
-                Add More
-              </Link>
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {favorites.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} isFavorite={true} />
-          ))}
-        </div>
-      </>
-    );
-  };
-
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       {/* Header */}
@@ -93,7 +37,54 @@ export default function FavoritesPage() {
       )}
 
       {/* Content */}
-      {!isLoading && !isError && renderFavoritesList()}
+      {!isLoading && !isError && !favorites?.length && <EmptyState />}
+      {!isLoading && !isError && favorites?.length && (
+        <>
+          <div className="mb-8">
+            <div className={`flex items-center mb-4 ${isMobile ? 'flex-col gap-4' : 'justify-between'}`}>
+              <div className={isMobile ? 'text-center' : ''}>
+                <h2 className="text-2xl font-semibold mb-2">Your Favorite Movies</h2>
+                <p className="text-muted-foreground">
+                  You have {favorites.length} movie{favorites.length !== 1 ? 's' : ''} in your favorites
+                </p>
+              </div>
+
+              <Button variant="outline" asChild className={isMobile ? 'w-full' : ''}>
+                <Link href="/movies">
+                  <Search className="h-4 w-4 mr-2" />
+                  Add More
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {favorites.map((movie) => (
+              <MovieCard key={movie.id} movie={movie} isFavorite={true} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <>
+      <div className="text-center py-16">
+        <Heart className="h-24 w-24 mx-auto text-muted-foreground/50 mb-4" />
+        <h2 className="text-2xl font-semibold mb-2">No favorite movies yet</h2>
+      </div>
+
+      <div className="text-center py-4">
+        <Button variant="outline" asChild>
+          <Link href="/movies">
+            <Search className="h-4 w-4 mr-2" />
+            Browse Movies
+          </Link>
+        </Button>
+      </div>
+    </>
   );
 }
