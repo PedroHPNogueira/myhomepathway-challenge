@@ -86,7 +86,7 @@ NEXT_PUBLIC_BACKEND_API_URL=http://localhost:3001
 3- Run the Frontend
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 The frontend will be available at `http://localhost:3000`
