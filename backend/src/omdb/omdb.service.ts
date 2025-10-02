@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
 export interface OmdbMovie {
@@ -58,6 +64,8 @@ export class OmdbService {
     });
 
     if ('Error' in response.data) {
+      if (response.data.Error === 'Movie not found!') throw new NotFoundException(response.data.Error);
+
       throw new BadRequestException(response.data.Error);
     }
 
