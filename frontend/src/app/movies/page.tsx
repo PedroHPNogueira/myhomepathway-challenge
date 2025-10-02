@@ -1,20 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, ChevronLeft, ChevronRight, Film } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Film, ChevronsRight, ChevronsLeft } from 'lucide-react';
 import { useListMovies } from '@/services/movies/useListMovies';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MovieCard } from '@/components/MovieCard';
+import { useListFavoriteMovies } from '@/services/favoriteMovies/useListFavoriteMovies';
+import { MovieSkeletons } from '@/components/MovieSkeletons';
 
 export default function MoviesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentSearch, setCurrentSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
+  const { data: favorites } = useListFavoriteMovies();
   const {
     data: moviesData,
     isLoading,
@@ -89,7 +90,11 @@ export default function MoviesPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {moviesData.results.map((movie) => (
-              <MovieCard key={movie.imdbID} movie={movie} />
+              <MovieCard
+                key={movie.imdbID}
+                movie={movie}
+                isFavorite={favorites?.some((favorite) => favorite.imdbId === movie.imdbID) ?? false}
+              />
             ))}
           </div>
 
@@ -134,25 +139,6 @@ export default function MoviesPage() {
   );
 }
 
-function MovieSkeletons() {
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      {Array.from({ length: 10 }).map((_, i) => (
-        <Card key={i} className="overflow-hidden">
-          <div className="aspect-[2/3]">
-            <Skeleton className="w-full h-full" />
-          </div>
-          <CardContent className="p-4">
-            <Skeleton className="h-6 w-full mb-2" />
-            <Skeleton className="h-4 w-20 mb-2" />
-            <Skeleton className="h-5 w-16" />
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
 function Pagination({
   handlePageChange,
   isFetching,
@@ -171,6 +157,16 @@ function Pagination({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
       <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageChange(1)}
+          disabled={isFetching}
+          className="h-8 w-8 p-0"
+        >
+          <ChevronsLeft className="h-4 w-4" />
+        </Button>
+
         <Button
           variant="outline"
           size="sm"
@@ -205,6 +201,16 @@ function Pagination({
           className="h-8 w-8 p-0"
         >
           <ChevronRight className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageChange(totalPages)}
+          disabled={isFetching}
+          className="h-8 w-8 p-0"
+        >
+          <ChevronsRight className="h-4 w-4" />
         </Button>
       </div>
     </div>

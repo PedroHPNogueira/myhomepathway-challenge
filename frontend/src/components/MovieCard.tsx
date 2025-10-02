@@ -1,20 +1,49 @@
-import { OmdbMovie } from '@/types';
+import { FavoriteMovie, OmdbMovie } from '@/types';
 import { Card, CardHeader } from './ui/card';
 import { Button } from './ui/button';
-import { Heart, Calendar, Film } from 'lucide-react';
+import { Heart, Calendar } from 'lucide-react';
 import Image from 'next/image';
-import { Badge } from './ui/badge';
 import { CardContent } from './ui/card';
-import { CardFooter } from './ui/card';
+import { useAddFavoriteMovie } from '@/services/favoriteMovies/useAddFavoriteMovie';
+import { useMemo, useCallback } from 'react';
+import { useRemoveFavoriteMovie } from '@/services/favoriteMovies/useRemoveFavoriteMovie';
 
-export function MovieCard({ movie }: { movie: OmdbMovie }) {
+export function MovieCard({ movie, isFavorite }: { movie: OmdbMovie | FavoriteMovie; isFavorite: boolean }) {
+  const { mutate: addFavoriteMovie } = useAddFavoriteMovie();
+  const { mutate: removeFavoriteMovie } = useRemoveFavoriteMovie();
+
+  const movieInfo = useMemo(
+    () => ({
+      imdbID: 'imdbId' in movie ? movie.imdbId : movie.imdbID,
+      title: 'Title' in movie ? movie.Title : movie.title,
+      year: 'Year' in movie ? movie.Year : movie.year,
+      poster: 'Poster' in movie ? movie.Poster : movie.poster,
+    }),
+    [movie],
+  );
+
+  const handleAddFavoriteMovie = useCallback(() => {
+    addFavoriteMovie({
+      imdbId: movieInfo.imdbID,
+      title: movieInfo.title,
+      year: movieInfo.year,
+      poster: movieInfo.poster,
+    });
+  }, [addFavoriteMovie, movieInfo]);
+
+  const handleRemoveFavoriteMovie = () => {
+    const movieId = 'id' in movie ? movie.id : null;
+    if (!movieId) return;
+    removeFavoriteMovie(movieId);
+  };
+
   return (
-    <Card key={movie.imdbID} className="group hover:shadow-lg transition-all duration-200 overflow-hidden">
+    <Card key={movieInfo.imdbID} className="group hover:shadow-lg transition-all duration-200 overflow-hidden">
       <CardHeader className="p-0">
         <div className="relative aspect-[2/3] overflow-hidden">
           <Image
-            src={movie.Poster !== 'N/A' ? movie.Poster : '/placeholder-movie.jpg'}
-            alt={movie.Title}
+            src={movieInfo.poster !== 'N/A' ? movieInfo.poster : '/placeholder-movie.jpg'}
+            alt={movieInfo.title}
             width={300}
             height={800}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
@@ -25,8 +54,9 @@ export function MovieCard({ movie }: { movie: OmdbMovie }) {
               size="sm"
               variant="secondary"
               className="h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white border-none"
+              onClick={isFavorite ? handleRemoveFavoriteMovie : handleAddFavoriteMovie}
             >
-              <Heart className="h-4 w-4" />
+              <Heart className={`h-4 w-4 ${isFavorite ? 'text-red-500 fill-current' : ''}`} />
             </Button>
           </div>
         </div>
@@ -34,25 +64,14 @@ export function MovieCard({ movie }: { movie: OmdbMovie }) {
 
       <CardContent className="p-4">
         <h3 className="font-semibold text-lg line-clamp-2 mb-2 group-hover:text-primary transition-colors">
-          {movie.Title}
+          {movieInfo.title}
         </h3>
 
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
           <Calendar className="h-4 w-4" />
-          <span>{movie.Year}</span>
+          <span>{movieInfo.year}</span>
         </div>
-
-        <Badge variant="secondary" className="text-xs">
-          <Film className="h-3 w-3 mr-1" />
-          {movie.Type}
-        </Badge>
       </CardContent>
-
-      <CardFooter className="p-4 pt-0">
-        <Button className="w-full" size="sm">
-          View Details
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

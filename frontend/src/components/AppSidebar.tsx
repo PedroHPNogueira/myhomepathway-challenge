@@ -33,7 +33,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href="/movies/favorites">
+                  <Link href="/favorites">
                     <Heart className="h-4 w-4" />
                     <span>Favorite Movies</span>
                   </Link>
