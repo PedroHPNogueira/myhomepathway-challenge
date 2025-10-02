@@ -9,7 +9,6 @@ export class MoviesController {
 
   @Get()
   listMovies(@Query() query: ListMoviesDto) {
-    console.log('query', query);
     return this.moviesService.listMovies(query.search, query.page ?? 1);
   }
 }

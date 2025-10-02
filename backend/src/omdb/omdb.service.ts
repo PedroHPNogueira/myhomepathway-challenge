@@ -34,7 +34,6 @@ export class OmdbService {
 
   constructor() {
     this.apiKey = process.env.OMDB_API_KEY || '';
-    console.log('apiKey', this.apiKey);
     this.axiosInstance = axios.create({
       baseURL: 'http://www.omdbapi.com/',
       timeout: 10000,
